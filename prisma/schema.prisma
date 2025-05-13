@@ -1,0 +1,120 @@
+// Não gerado o arquivo de migração
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum PaymentStatus {
+  PENDING
+  APPROVED
+  FAILED
+}
+
+model Store {
+  id         String     @id @default(uuid())
+  name       String
+  email      String     @unique
+  password   String
+  enabled    Boolean    @default(true)
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  users      User[]
+  products   Product[]
+  categories Category[]
+  orders     Order[]
+
+  @@map("stores")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  enabled   Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  storeId   String?
+  store     Store?   @relation(fields: [storeId], references: [id])
+  Order     Order[]
+
+  @@map("users")
+}
+
+model Category {
+  id        String    @id @default(uuid())
+  name      String
+  storeId   String
+  store     Store?    @relation(fields: [storeId], references: [id])
+  products  Product[]
+  enabled   Boolean   @default(true)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@map("categories")
+}
+
+model Product {
+  id          String      @id @default(uuid())
+  name        String
+  description String?
+  price       Decimal     @db.Decimal(10, 2)
+  stock       Int
+  storeId     String
+  store       Store?      @relation(fields: [storeId], references: [id])
+  categoryId  String
+  category    Category?   @relation(fields: [categoryId], references: [id])
+  orders      Order[]
+  enabled     Boolean     @default(true)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  OrderItem   OrderItem[]
+
+  @@map("products")
+}
+
+model Order {
+  id         String      @id @default(uuid())
+  userId     String
+  user       User?       @relation(fields: [userId], references: [id])
+  storeId    String
+  store      Store?      @relation(fields: [storeId], references: [id])
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  products   Product[]
+  orderItems OrderItem[]
+  payment    Payment[]
+  total      Decimal     @db.Decimal(10, 2)
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id         String   @id @default(uuid())
+  orderId    String
+  order      Order?   @relation(fields: [orderId], references: [id])
+  productId  String
+  product    Product? @relation(fields: [productId], references: [id])
+  quantity   Int
+  unit_price Float
+
+  @@map("order_items")
+}
+
+model Payment {
+  id        String        @id @default(uuid())
+  orderId   String
+  order     Order?        @relation(fields: [orderId], references: [id])
+  total     Float
+  status    PaymentStatus
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  @@map("payments")
+}
