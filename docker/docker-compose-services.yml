@@ -1,7 +1,7 @@
 services:
   rabbitmq:
     image: rabbitmq:management
-    container_name: rabbitmq_automation_scraping_api
+    container_name: nest_backend_rabbitmq
     restart: always
     env_file:
       - ../.env
@@ -15,13 +15,13 @@ services:
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
     networks:
-      - automation_scraping_api_network
+      - nest_back_network
 
 volumes:
   rabbitmq_data:
     driver: local
 
 networks:
-  automation_scraping_api_network:
-    name: automation_scraping_api_network
+  nest_back_network:
+    name: nest_back_network
     driver: bridge

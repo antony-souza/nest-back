@@ -15,6 +15,7 @@ import { JwtService } from '@nestjs/jwt';
 import { AuthModule } from './modules/auth/auth.module';
 import { UserModule } from './modules/user/user.module';
 import { StoreModule } from './modules/store/store.module';
+import { CategoryModule } from './modules/category/category.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { StoreModule } from './modules/store/store.module';
     AuthModule,
     UserModule,
     StoreModule,
+    CategoryModule,
   ],
   controllers: [AppController],
   providers: [
