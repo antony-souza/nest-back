@@ -9,10 +9,12 @@ import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { NeedApiKeyMiddleware } from './middlewares/need-api-key.middleware';
 import { NeedTokenMiddleware } from './middlewares/need-token.middleware';
-import { PrismaService } from './prisma/prisma.service';
+import { PrismaService } from './services/prisma.service';
 import { JwtTokenService } from './services/jwt-token.service';
 import { JwtService } from '@nestjs/jwt';
 import { AuthModule } from './modules/auth/auth.module';
+import { UserModule } from './modules/user/user.module';
+import { StoreModule } from './modules/store/store.module';
 
 @Module({
   imports: [
@@ -20,6 +22,8 @@ import { AuthModule } from './modules/auth/auth.module';
       isGlobal: true,
     }),
     AuthModule,
+    UserModule,
+    StoreModule,
   ],
   controllers: [AppController],
   providers: [
@@ -37,7 +41,7 @@ export class AppModule implements NestModule {
     consumer.apply(NeedApiKeyMiddleware).forRoutes('*');
     consumer
       .apply(NeedTokenMiddleware)
-      .exclude({ path: 'auth/login', method: RequestMethod.POST })
+      .exclude({ path: 'auth', method: RequestMethod.POST })
       .forRoutes('*');
   }
 }
