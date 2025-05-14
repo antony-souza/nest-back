@@ -7,7 +7,7 @@ import { Request, Response, NextFunction } from 'express';
 import { JwtTokenService } from 'src/services/jwt-token.service';
 
 @Injectable()
-export class JwtMiddleware implements NestMiddleware {
+export class NeedTokenMiddleware implements NestMiddleware {
   constructor(private readonly jwtTokenService: JwtTokenService) {}
 
   use(req: Request, res: Response, next: NextFunction) {
@@ -17,8 +17,8 @@ export class JwtMiddleware implements NestMiddleware {
     }
 
     try {
-      const payload = this.jwtTokenService.verifyToken(token);
-      req['userData'] = payload;
+      const tokenDecoded = this.jwtTokenService.verifyToken(token);
+      req['userData'] = tokenDecoded;
       next();
     } catch {
       throw new UnauthorizedException('Invalid token');

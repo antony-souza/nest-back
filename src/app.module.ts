@@ -1,8 +1,14 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
-import { needApiKeyMiddleware } from './middlewares/api-key.middleware';
+import { NeedApiKeyMiddleware } from './middlewares/need-api-key.middleware';
+import { NeedTokenMiddleware } from './middlewares/need-token.middleware';
 
 @Module({
   imports: [
@@ -15,6 +21,10 @@ import { needApiKeyMiddleware } from './middlewares/api-key.middleware';
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(needApiKeyMiddleware).forRoutes('*');
+    consumer.apply(NeedApiKeyMiddleware).forRoutes('*');
+    consumer
+      .apply(NeedTokenMiddleware)
+      .exclude({ path: 'auth/login', method: RequestMethod.POST })
+      .forRoutes('*');
   }
 }
