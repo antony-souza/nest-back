@@ -38,4 +38,21 @@ export class UserService {
 
     return newUser;
   }
+
+  async findAll(): Promise<User[]> {
+    const users = await this.prisma.user.findMany({
+      include: {
+        store: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+    });
+
+    if (!users) throw new NotFoundException('No users found');
+
+    return users;
+  }
 }

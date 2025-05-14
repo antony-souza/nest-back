@@ -3,14 +3,14 @@ import {
   NestMiddleware,
   UnauthorizedException,
 } from '@nestjs/common';
-import { Request, NextFunction } from 'express';
+import { Request, NextFunction, Response } from 'express';
 import { JwtTokenService } from 'src/services/jwt-token.service';
 
 @Injectable()
 export class NeedTokenMiddleware implements NestMiddleware {
   constructor(private readonly jwtTokenService: JwtTokenService) {}
 
-  use(req: Request, next: NextFunction) {
+  use(req: Request, res: Response, next: NextFunction) {
     const token = req.headers['authorization']?.split(' ')[1];
     if (!token) {
       throw new UnauthorizedException('Token not found');
