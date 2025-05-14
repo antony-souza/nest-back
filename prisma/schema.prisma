@@ -1,5 +1,3 @@
-// Não gerado o arquivo de migração
-
 generator client {
   provider = "prisma-client-js"
   output   = "../generated/prisma"

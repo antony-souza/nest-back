@@ -5,7 +5,7 @@ import { IJwtPayload } from './interfaces/jwt-payload.interface';
 
 @Injectable()
 export class JwtTokenService {
-  private constructor(private readonly jwtService: JwtService) {}
+  constructor(private readonly jwtService: JwtService) {}
 
   public generateToken(payload: IJwtPayload): string {
     const token = this.jwtService.sign(payload, {
