@@ -39,12 +39,16 @@ export class UserService {
     return newUser;
   }
 
-  async findAll(): Promise<User[]> {
+  async findAll() {
     const users = await this.prisma.user.findMany({
-      include: {
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        password: false,
+        storeId: true,
         store: {
           select: {
-            id: true,
             name: true,
           },
         },
